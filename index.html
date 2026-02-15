@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Web Lì Xì 2026</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #ff4e50, #f9d423);
+        text-align: center;
+        padding: 50px;
+        color: white;
+    }
+    .box {
+        background: white;
+        color: black;
+        padding: 30px;
+        border-radius: 15px;
+        width: 350px;
+        margin: auto;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    input {
+        width: 90%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+    button {
+        background: red;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    button:hover {
+        background: darkred;
+    }
+    .result {
+        margin-top: 20px;
+        font-size: 22px;
+        font-weight: bold;
+        min-height: 30px;
+    }
+    .admin {
+        margin-top: 30px;
+        background: #fff3cd;
+        padding: 15px;
+        border-radius: 10px;
+        color: black;
+        text-align: left;
+        max-height: 250px;
+        overflow-y: auto;
+    }
+</style>
+</head>
+<body>
+
+<h1>🧧 Web Lì Xì 2026 🧧</h1>
+
+<div class="box">
+    <input type="text" id="name" placeholder="Nhập tên của bạn">
+    <input type="text" id="stk" placeholder="Nhập số tài khoản">
+    <input type="text" id="bank" placeholder="Nhập tên ngân hàng">
+    <button onclick="rutLiXi()" id="btn">Rút Lì Xì</button>
+    <div class="result" id="result"></div>
+</div>
+
+<div class="admin">
+    <h3>📋 Danh sách đã rút:</h3>
+    <ul id="list"></ul>
+</div>
+
+<script>
+function loadList() {
+    let data = JSON.parse(localStorage.getItem("lixi")) || [];
+    let list = document.getElementById("list");
+    list.innerHTML = "";
+    data.forEach(item => {
+        let li = document.createElement("li");
+        li.textContent = item.name + 
+            " | STK: " + item.stk + 
+            " | Ngân hàng: " + item.bank + 
+            " | " + item.money.toLocaleString() + "đ";
+        list.appendChild(li);
+    });
+}
+
+function rutLiXi() {
+    let name = document.getElementById("name").value.trim();
+    let stk = document.getElementById("stk").value.trim();
+    let bank = document.getElementById("bank").value.trim();
+    let result = document.getElementById("result");
+    let btn = document.getElementById("btn");
+
+    if (!name || !stk || !bank) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+    }
+
+    let data = JSON.parse(localStorage.getItem("lixi")) || [];
+
+    let existed = data.find(item => item.stk === stk);
+    if (existed) {
+        result.style.color = "red";
+        result.textContent = "Bạn đã rút lì xì rồi!";
+        return;
+    }
+
+    btn.disabled = true;
+    result.style.color = "orange";
+
+    let spinInterval;
+    let spinCount = 0;
+
+    spinInterval = setInterval(() => {
+        let fakeMoney = Math.floor(Math.random() * 91 + 10) * 1000;
+        result.textContent = "Đang quay... " + fakeMoney.toLocaleString() + "đ 🎰";
+        spinCount++;
+    }, 100);
+
+    setTimeout(() => {
+        clearInterval(spinInterval);
+
+        let money = Math.floor(Math.random() * 91 + 10) * 1000;
+
+        let newUser = {
+            name: name,
+            stk: stk,
+            bank: bank,
+            money: money
+        };
+
+        data.push(newUser);
+        localStorage.setItem("lixi", JSON.stringify(data));
+
+        result.style.color = "green";
+        result.textContent = "🎉 Chúc mừng! Bạn nhận được " + money.toLocaleString() + "đ 🧧";
+
+        btn.disabled = false;
+        loadList();
+
+    }, 3000);
+}
+
+loadList();
+</script>
+
+</body>
+</html>
+<button onclick="rutTien()">Rút tiền</button>
+<h2 id="ketqua">Đang tải...</h2>
+
+<script>
+const WEB_APP_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLj8Ae3hCykfRE_rXEN-MNYcN8y9FDWuRK0KqjzWHgZqUH3NPcG_L9pmdsZYrKjqAxGy5mt1YA1wHdkL0xNOvtnMJNYuv3C1S9rclFceIRU-itw7ApUwMn-rUwcocpC10-zdcwDabH0Kcx13mev2mCMfO2lJaxy0JtfQDndA7Ow1hRyfqfEyfSx1phzE-C205fK68_eQkhpIhRkrRW5GvcAo9PRPOF9rjr_p2LejsvXD179i2WjQbgc_dzUhemj9wyMQdHrm1PttEjgngelJThWP6tOk6w&lib=Ma54pWf-28kDcaNgbYNhTAwCacH7OvK-z";
+
+function rutTien() {
+  let soTien = Math.floor(Math.random() * 100000);
+
+  fetch(WEB_APP_URL, {
+    method: "POST",
+    body: new URLSearchParams({ amount: soTien })
+  }).then(() => loadTien());
+}
+
+function loadTien() {
+  fetch(WEB_APP_URL)
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById("ketqua").innerText =
+        "Tổng đã rút: " + data + " VNĐ";
+    });
+}
+
+loadTien();
+</script>
